@@ -20,7 +20,7 @@ def parse_args():
     # Specify the folder containing JSON files to be evaluated (not a single JSON file)
     parser.add_argument(
         "--base_dir",
-        default="./results",
+        default="./data",
         type=str,
         help="Folder containing JSON/JSONL files to be evaluated",
     )
@@ -56,6 +56,8 @@ def prepare_data(data_name, args):
 
 
 def is_multi_choice(answer):
+    if answer is None:
+        return False
     for c in answer:
         if c not in ["A", "B", "C", "D", "E"]:
             return False
@@ -132,7 +134,8 @@ def main(data_name, args):
 
     codes = []
     for i in range(len(examples)):
-        code = examples[i]["output"]
+        # Try 'generation' first, then 'output' as fallback
+        code = examples[i].get("generation", examples[i].get("output", ""))
         for stop_word in args.stop_words:
             if stop_word in code:
                 code = code.split(stop_word)[0].strip()
@@ -158,9 +161,12 @@ def main(data_name, args):
             ]:
                 preds[j] = choice_answer_clean(code[j])
             elif is_multi_choice(sample["gt"]) and not is_multi_choice(preds[j]):
-                preds[j] = "".join(
-                    [c for c in preds[j] if c in ["A", "B", "C", "D", "E"]]
-                )
+                if preds[j] is not None:
+                    preds[j] = "".join(
+                        [c for c in preds[j] if c in ["A", "B", "C", "D", "E"]]
+                    )
+                else:
+                    preds[j] = ""
         sample.update({"code": code, "pred": preds, "report": reports})
         all_samples.append(sample)
 
@@ -211,8 +217,11 @@ def main_all(args):
         {}
     )  # Key is filename (without extension), value is the evaluated acc
     for json_file in json_files:
-        # Use filename (without extension) as dataset name
-        dataset = args.dataset
+        # Use provided dataset name if available, otherwise use filename (without extension)
+        if args.dataset:
+            dataset = args.dataset
+        else:
+            dataset = os.path.splitext(os.path.basename(json_file))[0]
         args.input_path = json_file
         # Optional: Set some default values for output filenames to distinguish results from different files
         args.size = "default"

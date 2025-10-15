@@ -2,5 +2,5 @@
 python evaluation/eval_math.py \
     --exp_name "evaluation" \
     --output_dir "." \
-    --base_dir "./results" \
-    --dataset gsm8k
+    --base_dir "./outputs" \
+    --dataset aime24

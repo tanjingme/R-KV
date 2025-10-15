@@ -135,7 +135,7 @@ def parse_arguments():
         choices=["rkv", "fullkv", "snapkv", "streamingllm", "h2o"],
     )
     parser.add_argument("--kv_budget", type=int, default=None)
-    parser.add_argument("--window_size", type=int, default=None)
+    parser.add_argument("--window_size", type=int, default=8)
     parser.add_argument("--first_tokens", type=int, default=4)
     parser.add_argument("--mix_lambda", type=float, default=0.07)
     parser.add_argument("--retain_ratio", type=float, default=0.2)
