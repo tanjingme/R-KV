@@ -105,9 +105,9 @@ def LlamaAttention_forward(
         if self.layer_idx not in past_key_value.query_cache:
             # prefill stage
             bsz, n_heads, _, head_dim = query_states.shape
-            # past_key_value.query_cache[self.layer_idx] = torch.empty(
-            #     bsz, n_heads, 0, head_dim
-            # )
+            past_key_value.query_cache[self.layer_idx] = torch.empty(
+                bsz, n_heads, 0, head_dim
+            )
             past_key_value.query_cache[self.layer_idx] = query_states[
                 :, :, -self.config.method_config["window_size"] :, :
             ]
