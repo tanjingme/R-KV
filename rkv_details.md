@@ -267,3 +267,7 @@ def replace_mystral(compression_config):
 
 1.  **Shape Check**: 在 `forward` 中打印 `key_states_compress` 的 shape，确保其长度稳定在 `budget` 附近，没有随序列长度线性增长。
 2.  **Verify Output**: 使用短文本进行测试，对比开启 R-KV 前后的输出文本一致性。在 `budget` 充足（如 2048）的情况下，输出应几乎完全一致。
+
+## 说明
+上述文档是由google antigravity使用Gemini3 pro(High) Planning模式通过如下prompt生成的。
+Prompt1:请你阅读Readme.md然后选择性的分析本目录下的源码文件，搞清楚R-KV kv cache压缩的原理以及如何使用该算法压缩一个已经训练好的LLM模型（例如通过huggingface的transformers框架可以运行绝大多数huggingface托管的LLM模型），我是一位大模型算法工程师，知道LLM的attention机制，知道基于固定窗口的kv cache压缩算法。请把解释过程写入markdown文件当中。Prompt2:还要添加如何扩展针对custom LLM的压缩的修改方法
